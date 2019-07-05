@@ -18,11 +18,11 @@
     ]
   },
   "require": {
-    "php": "^7.2",
+    "php": "^7.1",
     "ext-json": "*",
     "ext-posix": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8"
+    "phpunit/phpunit": "^7"
   }
 }
