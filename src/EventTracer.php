@@ -72,7 +72,7 @@ class EventTracer {
 		}
 	}
 
-	public function begin(?string $name, ?string $cat=null, ?array $args=null): void {
+	public function begin(string $name, ?string $cat=null, ?array $args=null): void {
 		$this->log_event("B", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
 		if(!isset($this->depths[posix_getpid()])) $this->depths[posix_getpid()] = 0;
 		$this->depths[posix_getpid()]++;
