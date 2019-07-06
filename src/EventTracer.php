@@ -42,12 +42,17 @@ class EventTracer {
 		$this->buffer = [];
 
 		$fp = fopen($filename, "a");
-		fseek($fp, 0, SEEK_END);
-		if(ftell($fp) !== 0) {
-			$encoded = substr($encoded, 1);
+		if(flock($fp, LOCK_EX)) {
+			fseek($fp, 0, SEEK_END);
+			if(ftell($fp) !== 0) {
+				$encoded = substr($encoded, 1);
+			}
+			$encoded = substr($encoded, 0, strlen($encoded)-1) . ",\n";
+			fwrite($fp, $encoded);
+			fflush($fp);
+			flock($fp, LOCK_UN);
 		}
-		$encoded = substr($encoded, 0, strlen($encoded)-1) . ",\n";
-		fwrite($fp, $encoded);
+		fclose($fp);
 	}
 
 	private function log_event(string $ph, array $optionals): void {
