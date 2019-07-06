@@ -25,6 +25,10 @@ class EventTracer {
 		}
 	}
 
+	/*
+	 * Meta-methods
+	 */
+
 	public function clear() {
 		if(!isset($this->depths[posix_getpid()])) return;
 
@@ -77,6 +81,10 @@ class EventTracer {
 		}
 	}
 
+	/*
+	 * Methods which map ~1:1 with the specification
+	 */
+
 	public function begin(string $name, ?string $cat=null, ?array $args=null): void {
 		$this->log_event("B", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
 		if(!isset($this->depths[posix_getpid()])) $this->depths[posix_getpid()] = 0;
@@ -88,8 +96,8 @@ class EventTracer {
 		$this->depths[posix_getpid()]--;
 	}
 
-	public function complete(int $duration, string $name=null, ?string $cat=null, ?array $args=null): void {
-		$this->log_event("X", ["dur"=>$duration, "name"=>$name, "cat"=>$cat, "args"=>$args]);
+	public function complete(int $start, int $duration, string $name=null, ?string $cat=null, ?array $args=null): void {
+		$this->log_event("X", ["ts"=>$start, "dur"=>$duration, "name"=>$name, "cat"=>$cat, "args"=>$args]);
 	}
 
 	/*
