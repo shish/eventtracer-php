@@ -76,6 +76,26 @@ class EventTracerTest extends TestCase {
 		$this->assertArraySubset(["ph"=>"E"], $et->buffer[4]);
 	}
 
+	public function testInstant(): void {
+		$et = new EventTracer();
+		$et->instant("Test Begins", null, "p");
+		$et->begin("running program");
+		$et->end();
+		$this->assertEquals(3, count($et->buffer));
+		$this->assertArraySubset(["ph"=>"i", "name"=>"Test Begins"], $et->buffer[0]);
+	}
+
+	public function testCounter(): void {
+		$et = new EventTracer();
+		$et->counter("cache", null, ["hits"=>0, "misses"=>0]);
+		usleep(10000);
+		$et->counter("cache", null, ["hits"=>1, "misses"=>0]);
+		usleep(10000);
+		$et->counter("cache", null, ["hits"=>1, "misses"=>1]);
+		$this->assertEquals(3, count($et->buffer));
+		$this->assertArraySubset(["ph"=>"C", "name"=>"cache"], $et->buffer[0]);
+	}
+
 	/*
 	 * Utility things
 	 */

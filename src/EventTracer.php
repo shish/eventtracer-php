@@ -100,14 +100,15 @@ class EventTracer {
 		$this->log_event("X", ["ts"=>$start, "dur"=>$duration, "name"=>$name, "cat"=>$cat, "args"=>$args]);
 	}
 
-	/*
-	public function instant(?string $name=null, ?string $cat=null, ?array $args=null): void {
-		$this->log_event("i", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
+	public function instant(string $name=null, ?string $cat=null, ?string $scope=null, ?array $args=null): void {
+		// assert($scope in [g, p, t])
+		$this->log_event("i", ["name"=>$name, "cat"=>$cat, "scope"=>$scope, "args"=>$args]);
 	}
-	*/
 
+	public function counter(string $name=null, ?string $cat=null, ?array $args=null): void {
+		$this->log_event("C", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
+	}
 	/*
-	public function counter(): void {}
 
 	public function async_start(): void {}
 	public function async_instant(): void {}
