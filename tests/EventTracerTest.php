@@ -4,6 +4,9 @@ declare(strict_types=1);
 use PHPUnit\Framework\Constraint\ArraySubset;
 use PHPUnit\Framework\TestCase;
 
+function nanotime() {
+	return (int)(microtime(true) * 1000000);
+}
 
 function hello(EventTracer $et) {
 	$et->begin("saying hello");
@@ -13,7 +16,7 @@ function hello(EventTracer $et) {
 }
 
 function greet(EventTracer $et, string $name) {
-	$et->complete(200000, "greeting $name");
+	$et->complete(nanotime(),200000, "greeting $name");
 	printf("$name\n");
 	usleep(200000);
 }
@@ -57,7 +60,7 @@ class EventTracerTest extends TestCase {
 
 	public function testComplete(): void {
 		$et = new EventTracer();
-		$et->complete(1000000, "complete item");
+		$et->complete(nanotime(), 1000000, "complete item");
 		$this->assertEquals(1, count($et->buffer));
 		$this->assertArraySubset(["ph"=>"X", "name"=>"complete item"], $et->buffer[0]);
 	}
@@ -95,8 +98,8 @@ class EventTracerTest extends TestCase {
 		// Write two streams and make sure there's only one beginning
 		$et1 = new EventTracer($this->tmpfile);
 		$et2 = new EventTracer($this->tmpfile);
-		$et1->complete(1, "item 1");
-		$et2->complete(1, "item 2");
+		$et1->complete(nanotime(), 1, "item 1");
+		$et2->complete(nanotime(), 1, "item 2");
 
 		// finished_data = data, minus trailing comma, plus closing brace
 		$data = file_get_contents($this->tmpfile);
@@ -110,8 +113,8 @@ class EventTracerTest extends TestCase {
 		// Write two streams and make sure there's only one beginning
 		$et1 = new EventTracer();
 		$et2 = new EventTracer();
-		$et1->complete(1, "flushed 1");
-		$et2->complete(1, "flushed 2");
+		$et1->complete(nanotime(), 1, "flushed 1");
+		$et2->complete(nanotime(), 1, "flushed 2");
 		$et1->flush($this->tmpfile);
 		$et2->flush($this->tmpfile);
 
