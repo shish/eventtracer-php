@@ -85,27 +85,27 @@ class EventTracer {
 	 * Methods which map ~1:1 with the specification
 	 */
 
-	public function begin(string $name, ?string $cat=null, ?array $args=null): void {
+	public function begin(string $name, ?array $args=null, ?string $cat=null): void {
 		$this->log_event("B", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
 		if(!isset($this->depths[posix_getpid()])) $this->depths[posix_getpid()] = 0;
 		$this->depths[posix_getpid()]++;
 	}
 
-	public function end(?string $name=null, ?string $cat=null, ?array $args=null): void {
+	public function end(?string $name=null, ?array $args=null, ?string $cat=null): void {
 		$this->log_event("E", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
 		$this->depths[posix_getpid()]--;
 	}
 
-	public function complete(int $start, int $duration, string $name=null, ?string $cat=null, ?array $args=null): void {
+	public function complete(int $start, int $duration, string $name=null, ?array $args=null, ?string $cat=null): void {
 		$this->log_event("X", ["ts"=>$start, "dur"=>$duration, "name"=>$name, "cat"=>$cat, "args"=>$args]);
 	}
 
-	public function instant(string $name=null, ?string $cat=null, ?string $scope=null, ?array $args=null): void {
+	public function instant(string $name=null, ?string $scope=null, ?array $args=null, ?string $cat=null): void {
 		// assert($scope in [g, p, t])
 		$this->log_event("i", ["name"=>$name, "cat"=>$cat, "scope"=>$scope, "args"=>$args]);
 	}
 
-	public function counter(string $name=null, ?string $cat=null, ?array $args=null): void {
+	public function counter(string $name=null, ?array $args=null, ?string $cat=null): void {
 		$this->log_event("C", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
 	}
 	/*
