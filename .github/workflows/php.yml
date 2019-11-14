@@ -15,7 +15,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Set Up PHP
+    - name: Set up PHP
       uses: shivammathur/setup-php@master
       with:
         php-version: ${{ matrix.php-versions }}
