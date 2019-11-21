@@ -18,6 +18,8 @@ Visit `chrome://tracing`
 
 Load JSON file
 
+![Screenshot](.github/readme/trace.png)
+
 
 Format Spec:
 ------------
