@@ -96,7 +96,7 @@ class EventTracer {
 		$this->depths[posix_getpid()]--;
 	}
 
-	public function complete(int $start, int $duration, string $name=null, ?array $args=null, ?string $cat=null): void {
+	public function complete(float $start, float $duration, string $name=null, ?array $args=null, ?string $cat=null): void {
 		$this->log_event("X", ["ts"=>$start, "dur"=>$duration, "name"=>$name, "cat"=>$cat, "args"=>$args]);
 	}
 
