@@ -21,10 +21,10 @@ class EventTracer
                 throw new Exception("Failed to open $filename");
             }
 
-			fseek($this->fp, 0, SEEK_END);
-			if (ftell($this->fp) === 0) {
-				fwrite($this->fp, "[\n");
-			}
+            fseek($this->fp, 0, SEEK_END);
+            if (ftell($this->fp) === 0) {
+                fwrite($this->fp, "[\n");
+            }
         } else {
             $this->buffer = [];
         }
