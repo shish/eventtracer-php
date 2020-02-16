@@ -36,11 +36,11 @@ class EventTracer
 
     public function clear()
     {
-        if (!isset($this->depths[posix_getpid()])) {
+        if (!isset($this->depths[getmypid()])) {
             return;
         }
 
-        while ($this->depths[posix_getpid()] > 0) {
+        while ($this->depths[getmypid()] > 0) {
             $this->end();
         }
     }
@@ -77,8 +77,8 @@ class EventTracer
         $dict = [
             "ph" => $ph,
             "ts" => microtime(true) * 1000000,
-            "pid" => posix_getpid(),
-            "tid" => posix_getpid(),  # php has no threads?
+            "pid" => getmypid(),
+            "tid" => getmypid(),  # php has no threads?
         ];
         foreach ($optionals as $k => $v) {
             if (!is_null($v)) {
@@ -101,16 +101,16 @@ class EventTracer
     public function begin(string $name, ?array $args=null, ?string $cat=null): void
     {
         $this->log_event("B", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
-        if (!isset($this->depths[posix_getpid()])) {
-            $this->depths[posix_getpid()] = 0;
+        if (!isset($this->depths[getmypid()])) {
+            $this->depths[getmypid()] = 0;
         }
-        $this->depths[posix_getpid()]++;
+        $this->depths[getmypid()]++;
     }
 
     public function end(?string $name=null, ?array $args=null, ?string $cat=null): void
     {
         $this->log_event("E", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
-        $this->depths[posix_getpid()]--;
+        $this->depths[getmypid()]--;
     }
 
     public function complete(float $start, float $duration, string $name=null, ?array $args=null, ?string $cat=null): void
