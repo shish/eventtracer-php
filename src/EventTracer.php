@@ -17,9 +17,9 @@ class EventTracer
     {
         if ($filename) {
             $this->fp = fopen($filename, "a");
-            if ($this->fp === false) {
-                throw new Exception("Failed to open $filename");
-            }
+            // PHP SHOULD throw an exception but MAY
+            // return false if fopen fails...
+            assert($this->fp !== false);
 
             fseek($this->fp, 0, SEEK_END);
             if (ftell($this->fp) === 0) {
@@ -55,9 +55,7 @@ class EventTracer
         $this->buffer = [];
 
         $fp = fopen($filename, "a");
-        if ($fp === false) {
-            throw new Exception("Failed to open $filename");
-        }
+        assert($fp !== false);
 
         if (flock($fp, LOCK_EX)) {
             fseek($fp, 0, SEEK_END);
