@@ -119,38 +119,70 @@ class EventTracer
     public function instant(string $name=null, ?string $scope=null, ?array $args=null, ?string $cat=null): void
     {
         // assert($scope in [g, p, t])
-        $this->log_event("i", ["name"=>$name, "cat"=>$cat, "scope"=>$scope, "args"=>$args]);
+        $this->log_event("I", ["name"=>$name, "cat"=>$cat, "scope"=>$scope, "args"=>$args]);
     }
 
     public function counter(string $name=null, ?array $args=null, ?string $cat=null): void
     {
         $this->log_event("C", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
     }
-    /*
 
-    public function async_start(): void {}
-    public function async_instant(): void {}
-    public function async_end(): void {}
+    public function async_start(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("b", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
+    public function async_instant(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("n", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
+    public function async_end(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("e", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
 
-    public function flow_start(): void {}
-    public function flow_step(): void {}
-    public function flow_end(): void {}
+    public function flow_start(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("s", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
+    public function flow_instant(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("t", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
+    public function flow_end(string $name=null, string $id=null, ?array $args=null, ?string $cat=null): void {
+        $this->log_event("f", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args]);
+    }
 
-    public function sample(): void {}
+    // deprecated
+    // public function sample(): void {P}
 
-    public function object_created(): void {}
-    public function object_snapshot(): void {}
-    public function object_destroyed(): void {}
+    public function object_created(string $name=null, string $id=null, ?array $args=null, ?string $cat=null, ?string $scope=null): void {
+        $this->log_event("N", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args, "scope"=>$scope]);
+    }
+    public function object_snapshot(string $name=null, string $id=null, ?array $args=null, ?string $cat=null, ?string $scope=null): void {
+        $this->log_event("O", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args, "scope"=>$scope]);
+    }
+    public function object_destroyed(string $name=null, string $id=null, ?array $args=null, ?string $cat=null, ?string $scope=null): void {
+        $this->log_event("D", ["name"=>$name, "id"=>$id, "cat"=>$cat, "args"=>$args, "scope"=>$scope]);
+    }
 
-    public function metadata(): void {}
+    public function metadata(string $name=null, ?array $args=null): void
+    {
+        $this->log_event("M", ["name"=>$name, "args"=>$args]);
+    }
 
-    public function memory_dump_global(): void {}
-    public function memory_dump_process(): void {}
+    // "The precise format of the global and process arguments has not been determined yet"
+    // public function memory_dump_global(): void {V}
+    // public function memory_dump_process(): void {v}
 
-    public function mark(): void {}
+    public function mark(string $name=null, ?array $args=null, ?string $cat=null): void
+    {
+        $this->log_event("R", ["name"=>$name, "cat"=>$cat, "args"=>$args]);
+    }
 
-    public function clock_sync(): void {}
+    public function clock_sync(string $name=null, string $sync_id=null, ?float $issue_ts=null): void
+    {
+        $this->log_event("c", ["name"=>$name, "args"=>["sync_id"=>$sync_id, "issue_ts"=>$issue_ts]]);
+    }
 
-    public function context(): void {}
-    */
+    public function context_enter(string $name=null, string $id=null): void {
+        $this->log_event("(", ["name"=>$name, "id"=>$id]);
+    }
+    public function context_leave(string $name=null, string $id=null): void {
+        $this->log_event(")", ["name"=>$name, "id"=>$id]);
+    }
 }

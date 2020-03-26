@@ -98,7 +98,7 @@ class EventTracerTest extends TestCase
         $et->begin("running program");
         $et->end();
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"i", "name"=>"Test Begins"], $et->buffer[0]);
+        $this->assertArraySubset(["ph"=>"I", "name"=>"Test Begins"], $et->buffer[0]);
     }
 
     public function testCounter(): void
@@ -111,6 +111,80 @@ class EventTracerTest extends TestCase
         $et->counter("cache", ["hits"=>1, "misses"=>1]);
         $this->assertEquals(3, count($et->buffer));
         $this->assertArraySubset(["ph"=>"C", "name"=>"cache"], $et->buffer[0]);
+    }
+
+    public function testAsync(): void
+    {
+        $et = new EventTracer();
+        $et->async_start("start", "my_id");
+        usleep(10000);
+        $et->async_instant("instant", "my_id");
+        usleep(10000);
+        $et->async_end("end", "my_id");
+        $this->assertEquals(3, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"b", "name"=>"start"], $et->buffer[0]);
+    }
+
+    public function testFlow(): void
+    {
+        $et = new EventTracer();
+        $et->flow_start("start", "my_id");
+        usleep(10000);
+        $et->flow_instant("instant", "my_id");
+        usleep(10000);
+        $et->flow_end("end", "my_id");
+        $this->assertEquals(3, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"s", "name"=>"start"], $et->buffer[0]);
+    }
+
+    public function testObject(): void
+    {
+        $et = new EventTracer();
+        $et->object_created("my_ob", "my_id");
+        usleep(10000);
+        $et->object_snapshot("my_ob", "my_id");
+        usleep(10000);
+        $et->object_destroyed("my_ob", "my_id");
+        $this->assertEquals(3, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"N", "name"=>"my_ob"], $et->buffer[0]);
+    }
+
+    public function testMetadata(): void
+    {
+        $et = new EventTracer();
+        $et->metadata("process_name", ["name"=>"my_process_name"]);
+        $et->metadata("process_labels", ["labels"=>"my_process_label"]);
+        $et->metadata("process_sort_index", ["sort_index"=>0]);
+        $et->metadata("thread_name", ["name"=>"my_thread_name"]);
+        $et->metadata("thread_sort_index", ["sort_index"=>0]);
+        $this->assertEquals(5, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"M", "name"=>"process_name"], $et->buffer[0]);
+    }
+
+    public function testMark(): void
+    {
+        $et = new EventTracer();
+        $et->mark("my_mark");
+        $this->assertEquals(1, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"R", "name"=>"my_mark"], $et->buffer[0]);
+    }
+
+    public function testClockSync(): void
+    {
+        $et = new EventTracer();
+        $et->clock_sync("sync", "sync_id", null);
+        $et->clock_sync("sync", "sync_id", 12345);
+        $this->assertEquals(2, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"c", "name"=>"sync"], $et->buffer[0]);
+    }
+
+    public function testContext(): void
+    {
+        $et = new EventTracer();
+        $et->context_enter("context", "context_id");
+        $et->context_leave("context", "context_id");
+        $this->assertEquals(2, count($et->buffer));
+        $this->assertArraySubset(["ph"=>"(", "name"=>"context"], $et->buffer[0]);
     }
 
     /*
