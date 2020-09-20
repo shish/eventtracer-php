@@ -8,18 +8,21 @@ function nanotime()
     return (int)(microtime(true) * 1000000);
 }
 
+$out = "";
 function hello(EventTracer $et)
 {
+    global $out;
     $et->begin("saying hello");
-    printf("hello ");
+    $out .= "hello ";
     usleep(100000);
     $et->end();
 }
 
 function greet(EventTracer $et, string $name)
 {
+    global $out;
     $et->complete(nanotime(), 200000, "greeting $name");
-    printf("$name\n");
+    $out .= "$name\n";
     usleep(200000);
 }
 
