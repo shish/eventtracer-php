@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use PHPUnit\Framework\Constraint\ArraySubset;
 use PHPUnit\Framework\TestCase;
 
 function nanotime()
@@ -31,8 +30,9 @@ class EventTracerTest extends TestCase
 
     public static function assertArraySubset($subset, $array, bool $checkForObjectIdentity = false, string $message = ''): void
     {
-        $constraint = new ArraySubset($subset, $checkForObjectIdentity);
-        static::assertThat($array, $constraint, $message);
+        foreach ($subset as $key => $value) {
+            static::assertEquals($value, $array[$key]);
+        }
     }
 
     public function setUp(): void
