@@ -71,8 +71,8 @@ class EventTracerTest extends TestCase
         $et->begin("running program");
         $et->end();
         $this->assertEquals(2, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"B", "name"=>"running program"], $et->buffer[0]);
-        $this->assertArraySubset(["ph"=>"E"], $et->buffer[1]);
+        $this->assertArraySubset(["ph" => "B", "name" => "running program"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "E"], $et->buffer[1]);
     }
 
     public function testComplete(): void
@@ -80,7 +80,7 @@ class EventTracerTest extends TestCase
         $et = new EventTracer();
         $et->complete(nanotime(), 1000000, "complete item");
         $this->assertEquals(1, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"X", "name"=>"complete item"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "X", "name" => "complete item"], $et->buffer[0]);
     }
 
     public function testNesting(): void
@@ -91,8 +91,8 @@ class EventTracerTest extends TestCase
         greet($et, "world");
         $et->end();
         $this->assertEquals(5, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"B", "name"=>"running program"], $et->buffer[0]);
-        $this->assertArraySubset(["ph"=>"E"], $et->buffer[4]);
+        $this->assertArraySubset(["ph" => "B", "name" => "running program"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "E"], $et->buffer[4]);
     }
 
     public function testInstant(): void
@@ -102,19 +102,19 @@ class EventTracerTest extends TestCase
         $et->begin("running program");
         $et->end();
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"I", "name"=>"Test Begins"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "I", "name" => "Test Begins"], $et->buffer[0]);
     }
 
     public function testCounter(): void
     {
         $et = new EventTracer();
-        $et->counter("cache", ["hits"=>0, "misses"=>0]);
+        $et->counter("cache", ["hits" => 0, "misses" => 0]);
         usleep(10000);
-        $et->counter("cache", ["hits"=>1, "misses"=>0]);
+        $et->counter("cache", ["hits" => 1, "misses" => 0]);
         usleep(10000);
-        $et->counter("cache", ["hits"=>1, "misses"=>1]);
+        $et->counter("cache", ["hits" => 1, "misses" => 1]);
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"C", "name"=>"cache"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "C", "name" => "cache"], $et->buffer[0]);
     }
 
     public function testAsync(): void
@@ -126,7 +126,7 @@ class EventTracerTest extends TestCase
         usleep(10000);
         $et->async_end("end", "my_id");
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"b", "name"=>"start"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "b", "name" => "start"], $et->buffer[0]);
     }
 
     public function testFlow(): void
@@ -138,7 +138,7 @@ class EventTracerTest extends TestCase
         usleep(10000);
         $et->flow_end("end", "my_id");
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"s", "name"=>"start"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "s", "name" => "start"], $et->buffer[0]);
     }
 
     public function testObject(): void
@@ -150,19 +150,19 @@ class EventTracerTest extends TestCase
         usleep(10000);
         $et->object_destroyed("my_ob", "my_id");
         $this->assertEquals(3, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"N", "name"=>"my_ob"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "N", "name" => "my_ob"], $et->buffer[0]);
     }
 
     public function testMetadata(): void
     {
         $et = new EventTracer();
-        $et->metadata("process_name", ["name"=>"my_process_name"]);
-        $et->metadata("process_labels", ["labels"=>"my_process_label"]);
-        $et->metadata("process_sort_index", ["sort_index"=>0]);
-        $et->metadata("thread_name", ["name"=>"my_thread_name"]);
-        $et->metadata("thread_sort_index", ["sort_index"=>0]);
+        $et->metadata("process_name", ["name" => "my_process_name"]);
+        $et->metadata("process_labels", ["labels" => "my_process_label"]);
+        $et->metadata("process_sort_index", ["sort_index" => 0]);
+        $et->metadata("thread_name", ["name" => "my_thread_name"]);
+        $et->metadata("thread_sort_index", ["sort_index" => 0]);
         $this->assertEquals(5, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"M", "name"=>"process_name"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "M", "name" => "process_name"], $et->buffer[0]);
     }
 
     public function testMark(): void
@@ -170,7 +170,7 @@ class EventTracerTest extends TestCase
         $et = new EventTracer();
         $et->mark("my_mark");
         $this->assertEquals(1, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"R", "name"=>"my_mark"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "R", "name" => "my_mark"], $et->buffer[0]);
     }
 
     public function testClockSync(): void
@@ -179,7 +179,7 @@ class EventTracerTest extends TestCase
         $et->clock_sync("sync", "sync_id", null);
         $et->clock_sync("sync", "sync_id", 12345);
         $this->assertEquals(2, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"c", "name"=>"sync"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "c", "name" => "sync"], $et->buffer[0]);
     }
 
     public function testContext(): void
@@ -188,7 +188,7 @@ class EventTracerTest extends TestCase
         $et->context_enter("context", "context_id");
         $et->context_leave("context", "context_id");
         $this->assertEquals(2, count($et->buffer));
-        $this->assertArraySubset(["ph"=>"(", "name"=>"context"], $et->buffer[0]);
+        $this->assertArraySubset(["ph" => "(", "name" => "context"], $et->buffer[0]);
     }
 
     /*
@@ -235,7 +235,7 @@ class EventTracerTest extends TestCase
 
         // finished_data = data, minus trailing comma, plus closing brace
         $data = file_get_contents($this->tmpfile);
-        $finished_data = substr($data, 0, strlen($data)-2) . "\n]";
+        $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
 
         $buffer = json_decode($finished_data);
         $this->assertEquals(2, count($buffer));
@@ -253,7 +253,7 @@ class EventTracerTest extends TestCase
 
         // finished_data = data, minus trailing comma, plus closing brace
         $data = file_get_contents($this->tmpfile);
-        $finished_data = substr($data, 0, strlen($data)-2) . "\n]";
+        $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
 
         $buffer = json_decode($finished_data);
         $this->assertEquals(2, count($buffer));
