@@ -196,13 +196,9 @@ class EventTracerTest extends TestCase
      */
     public function testFlushUnbuffered(): void
     {
-        try {
-            $et = new EventTracer($this->tmpfile);
-            $et->flush($this->tmpfile);
-            $this->assertTrue(false);
-        } catch (Exception $e) {
-            $this->assertTrue(true);
-        }
+        $this->expectException(\Exception::class);
+        $et = new EventTracer($this->tmpfile);
+        $et->flush($this->tmpfile);
     }
 
     /*

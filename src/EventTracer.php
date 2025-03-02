@@ -51,7 +51,7 @@ class EventTracer
 
     public function flush(string $filename): void
     {
-        if ($this->buffer == null) {
+        if (!isset($this->buffer)) {
             throw new Exception("Called flush() on an unbuffered stream");
         }
 
