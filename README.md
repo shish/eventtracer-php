@@ -1,7 +1,7 @@
 Generating Data:
 ----------------
-```
-$et = EventTracer("myeventlog.json");
+```php
+$et = new \EventTracer("myeventlog.json");
 
 $et->begin("Eating Cake");
 [...]
@@ -14,9 +14,7 @@ one go with `$et->flush($filename)`.
 
 Viewing Data:
 -------------
-Visit `chrome://tracing`
-
-Load JSON file
+Use [Perfetto](https://ui.perfetto.dev) and "Open trace file"
 
 ![Screenshot](.github/readme/trace.png)
 
