@@ -254,14 +254,26 @@ class EventTracerTest extends TestCase
         $buffer = json_decode($finished_data);
         $this->assertEquals(2, count($buffer));
     }
-    /*
-    $data = file_get_contents('trace.json');
-    $this->assertContains("BMARK testBasic running program", $data);
-    $this->assertContains("START testBasic running program", $data);
-    $this->assertContains("START hello saying hello", $data);
-    $this->assertContains("ENDOK hello", $data);
-    $this->assertContains("START greet greeting world", $data);
-    $this->assertContains("ENDOK greet", $data);
-    $this->assertContains("ENDOK testBasic", $data);
-    */
+
+    /**
+     * Test raw overrides
+     */
+    public function testOverrideTS(): void
+    {
+        // We can manually create an event which ends before it begins.
+        // We shouldn't... but we can
+        $et = new EventTracer();
+        $et->begin("raw", raw: ["ts" => 100]);
+        $et->end(raw: ["ts" => 0]);
+        $this->assertEquals($et->buffer[0]["ts"], 100);
+        $this->assertEquals($et->buffer[1]["ts"], 0);
+        $et->flush($this->tmpfile);
+
+        $data = file_get_contents($this->tmpfile);
+        $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
+
+        $buffer = json_decode($finished_data, true);
+        $this->assertTrue($buffer[0]["ts"] > $buffer[1]["ts"]);
+    }
+
 }

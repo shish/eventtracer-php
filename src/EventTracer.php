@@ -104,11 +104,12 @@ class EventTracer
      */
 
     /**
-     * @param array<string, mixed>|null $args
+    * @param array<string, mixed>|null $args
+    * @param array<string, mixed> $raw
      */
-    public function begin(string $name, ?array $args = null, ?string $cat = null): void
+    public function begin(string $name, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("B", ["name" => $name, "cat" => $cat, "args" => $args]);
+        $this->log_event("B", ["name" => $name, "cat" => $cat, "args" => $args, ...$raw]);
         if (!isset($this->depths[getmypid()])) {
             $this->depths[getmypid()] = 0;
         }
@@ -117,80 +118,90 @@ class EventTracer
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function end(?string $name = null, ?array $args = null, ?string $cat = null): void
+    public function end(?string $name = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("E", ["name" => $name, "cat" => $cat, "args" => $args]);
+        $this->log_event("E", ["name" => $name, "cat" => $cat, "args" => $args, ...$raw]);
         $this->depths[getmypid()]--;
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function complete(float $start, float $duration, ?string $name = null, ?array $args = null, ?string $cat = null): void
+    public function complete(float $start, float $duration, ?string $name = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("X", ["ts" => $start, "dur" => $duration, "name" => $name, "cat" => $cat, "args" => $args]);
+        $this->log_event("X", ["ts" => $start, "dur" => $duration, "name" => $name, "cat" => $cat, "args" => $args, ...$raw]);
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function instant(?string $name = null, ?string $scope = null, ?array $args = null, ?string $cat = null): void
+    public function instant(?string $name = null, ?string $scope = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
         // assert($scope in [g, p, t])
-        $this->log_event("I", ["name" => $name, "cat" => $cat, "scope" => $scope, "args" => $args]);
+        $this->log_event("I", ["name" => $name, "cat" => $cat, "scope" => $scope, "args" => $args, ...$raw]);
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function counter(?string $name = null, ?array $args = null, ?string $cat = null): void
+    public function counter(?string $name = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("C", ["name" => $name, "cat" => $cat, "args" => $args]);
+        $this->log_event("C", ["name" => $name, "cat" => $cat, "args" => $args, ...$raw]);
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function async_start(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function async_start(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("b", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("b", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function async_instant(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function async_instant(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("n", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("n", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function async_end(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function async_end(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("e", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("e", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function flow_start(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function flow_start(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("s", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("s", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function flow_instant(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function flow_instant(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("t", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("t", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function flow_end(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null): void
+    public function flow_end(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("f", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args]);
+        $this->log_event("f", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw]);
     }
 
     // deprecated
@@ -198,32 +209,36 @@ class EventTracer
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function object_created(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null): void
+    public function object_created(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("N", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope]);
+        $this->log_event("N", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function object_snapshot(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null): void
+    public function object_snapshot(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("O", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope]);
+        $this->log_event("O", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
     }
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function object_destroyed(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null): void
+    public function object_destroyed(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("D", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope]);
+        $this->log_event("D", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
     }
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function metadata(?string $name = null, ?array $args = null): void
+    public function metadata(?string $name = null, ?array $args = null, array $raw = []): void
     {
-        $this->log_event("M", ["name" => $name, "args" => $args]);
+        $this->log_event("M", ["name" => $name, "args" => $args, ...$raw]);
     }
 
     // "The precise format of the global and process arguments has not been determined yet"
@@ -232,23 +247,34 @@ class EventTracer
 
     /**
      * @param array<string, mixed>|null $args
+     * @param array<string, mixed> $raw
      */
-    public function mark(?string $name = null, ?array $args = null, ?string $cat = null): void
+    public function mark(?string $name = null, ?array $args = null, ?string $cat = null, array $raw = []): void
     {
-        $this->log_event("R", ["name" => $name, "cat" => $cat, "args" => $args]);
+        $this->log_event("R", ["name" => $name, "cat" => $cat, "args" => $args, ...$raw]);
     }
 
-    public function clock_sync(?string $name = null, ?string $sync_id = null, ?float $issue_ts = null): void
+    /**
+     * @param array<string, mixed> $raw
+     */
+    public function clock_sync(?string $name = null, ?string $sync_id = null, ?float $issue_ts = null, array $raw = []): void
     {
         $this->log_event("c", ["name" => $name, "args" => ["sync_id" => $sync_id, "issue_ts" => $issue_ts]]);
     }
 
-    public function context_enter(?string $name = null, ?string $id = null): void
+    /**
+     * @param array<string, mixed> $raw
+     */
+    public function context_enter(?string $name = null, ?string $id = null, array $raw = []): void
     {
-        $this->log_event("(", ["name" => $name, "id" => $id]);
+        $this->log_event("(", ["name" => $name, "id" => $id, ...$raw]);
     }
-    public function context_leave(?string $name = null, ?string $id = null): void
+
+    /**
+     * @param array<string, mixed> $raw
+     */
+    public function context_leave(?string $name = null, ?string $id = null, array $raw = []): void
     {
-        $this->log_event(")", ["name" => $name, "id" => $id]);
+        $this->log_event(")", ["name" => $name, "id" => $id, ...$raw]);
     }
 }
