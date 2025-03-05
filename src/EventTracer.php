@@ -216,7 +216,7 @@ class EventTracer
      */
     public function object_created(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("N", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
+        $this->log_event("N", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
@@ -224,7 +224,7 @@ class EventTracer
      */
     public function object_snapshot(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("O", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
+        $this->log_event("O", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope, ...$raw]);
     }
     /**
      * @param array<string, mixed>|null $args
@@ -232,7 +232,7 @@ class EventTracer
      */
     public function object_destroyed(?string $name = null, ?string $id = null, ?array $args = null, ?string $cat = null, ?string $scope = null, array $raw = []): void
     {
-        $this->log_event("D", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, ...$raw, "scope" => $scope]);
+        $this->log_event("D", ["name" => $name, "id" => $id, "cat" => $cat, "args" => $args, "scope" => $scope, ...$raw]);
     }
 
     /**
@@ -262,7 +262,7 @@ class EventTracer
      */
     public function clock_sync(?string $name = null, ?string $sync_id = null, ?float $issue_ts = null, array $raw = []): void
     {
-        $this->log_event("c", ["name" => $name, "args" => ["sync_id" => $sync_id, "issue_ts" => $issue_ts]]);
+        $this->log_event("c", ["name" => $name, "args" => ["sync_id" => $sync_id, "issue_ts" => $issue_ts, ...$raw]]);
     }
 
     /**
