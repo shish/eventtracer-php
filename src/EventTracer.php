@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class EventTracer
 {
-    /** @var list<string> */
+    /** @var list<array<string, mixed>> */
     public array $buffer;
     /** @var resource|false */
     private $fp = false;
@@ -56,6 +56,9 @@ class EventTracer
         }
 
         $encoded = json_encode($this->buffer);
+        if ($encoded === false) {
+            throw new Exception("Failed to encode buffer");
+        }
         $this->buffer = [];
 
         $fp = fopen($filename, "a");

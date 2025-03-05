@@ -33,8 +33,8 @@
             "@test"
         ],
         "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
-        "stan-ci": "phpstan analyse --error-format=github src --level 6",
-        "stan": "phpstan analyse --error-format=raw src --level 6",
+        "stan-ci": "phpstan analyse --error-format=github src --level 9",
+        "stan": "phpstan analyse --error-format=raw src --level 9",
         "test": "phpunit tests"
     }
 }
