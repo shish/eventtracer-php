@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-function nanotime()
+function nanotime(): int
 {
     return (int)(microtime(true) * 1000000);
 }
 
 $out = "";
-function hello(EventTracer $et)
+function hello(EventTracer $et): void
 {
     global $out;
     $et->begin("saying hello");
@@ -19,7 +19,7 @@ function hello(EventTracer $et)
     $et->end();
 }
 
-function greet(EventTracer $et, string $name)
+function greet(EventTracer $et, string $name): void
 {
     global $out;
     $et->complete(nanotime(), 200000, "greeting $name");
@@ -30,9 +30,15 @@ function greet(EventTracer $et, string $name)
 
 class EventTracerTest extends TestCase
 {
-    private $tmpfile;
+    private string $tmpfile;
 
-    public static function assertArraySubset($subset, $array, bool $checkForObjectIdentity = false, string $message = ''): void
+    /**
+     * @param array<string, mixed> $subset
+     * @param array<string, mixed> $array
+     * @param bool $checkForObjectIdentity
+     * @param string $message
+     */
+    public static function assertArraySubset(array $subset, array $array, bool $checkForObjectIdentity = false, string $message = ''): void
     {
         foreach ($subset as $key => $value) {
             static::assertEquals($value, $array[$key]);
@@ -231,9 +237,11 @@ class EventTracerTest extends TestCase
 
         // finished_data = data, minus trailing comma, plus closing brace
         $data = file_get_contents($this->tmpfile);
+        assert($data !== false);
         $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
 
-        $buffer = json_decode($finished_data);
+        /** @var array<int, array<string, mixed>> $buffer */
+        $buffer = json_decode($finished_data, true);
         $this->assertEquals(2, count($buffer));
     }
 
@@ -249,9 +257,11 @@ class EventTracerTest extends TestCase
 
         // finished_data = data, minus trailing comma, plus closing brace
         $data = file_get_contents($this->tmpfile);
+        assert($data !== false);
         $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
 
-        $buffer = json_decode($finished_data);
+        /** @var array<int, array<string, mixed>> $buffer */
+        $buffer = json_decode($finished_data, true);
         $this->assertEquals(2, count($buffer));
     }
 
@@ -270,8 +280,10 @@ class EventTracerTest extends TestCase
         $et->flush($this->tmpfile);
 
         $data = file_get_contents($this->tmpfile);
+        assert($data !== false);
         $finished_data = substr($data, 0, strlen($data) - 2) . "\n]";
 
+        /** @var array<int, array<string, mixed>> $buffer */
         $buffer = json_decode($finished_data, true);
         $this->assertTrue($buffer[0]["ts"] > $buffer[1]["ts"]);
     }

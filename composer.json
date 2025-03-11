@@ -12,11 +12,6 @@
             "role": "Developer"
         }
     ],
-    "autoload": {
-        "classmap": [
-            "src/"
-        ]
-    },
     "require": {
         "php": "^8.2",
         "ext-json": "*"
@@ -26,15 +21,23 @@
         "phpunit/phpunit": "^11.0",
         "phpstan/phpstan": "^2.0"
     },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
     "scripts": {
         "check": [
             "@format",
-            "@stan",
+            "@analyse",
             "@test"
         ],
+        "stan": [
+            "@analyse"
+        ],
         "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
-        "stan-ci": "phpstan analyse --error-format=github src --level 9",
-        "stan": "phpstan analyse --error-format=raw src --level 9",
-        "test": "phpunit tests"
+        "analyse-ci": "phpstan analyse --error-format=github",
+        "analyse": "phpstan analyse --error-format=raw | sed -E 's/:([0-9]+):/:\\1 /'",
+        "test": "XDEBUG_MODE=coverage phpunit"
     }
 }
