@@ -55,26 +55,27 @@ class EventTracer
             throw new Exception("Called flush() on an unbuffered stream");
         }
 
-        $encoded = json_encode($this->buffer);
-        if ($encoded === false) {
-            throw new Exception("Failed to encode buffer");
-        }
-        $this->buffer = [];
-
         $fp = fopen($filename, "a");
         assert($fp !== false);
 
         if (flock($fp, LOCK_EX)) {
             fseek($fp, 0, SEEK_END);
-            if (ftell($fp) !== 0) {
-                $encoded = substr($encoded, 1);
+            if (ftell($fp) === 0) {
+                fwrite($fp, "[\n");
             }
-            $encoded = substr($encoded, 0, strlen($encoded) - 1) . ",\n";
-            fwrite($fp, $encoded);
+            foreach ($this->buffer as $event) {
+                $encoded = json_encode($event);
+                if ($encoded === false) {
+                    throw new Exception("Failed to encode event");
+                }
+                fwrite($fp, $encoded . ",\n");
+            }
             fflush($fp);
             flock($fp, LOCK_UN);
         }
         fclose($fp);
+
+        $this->buffer = [];
     }
 
     /**
